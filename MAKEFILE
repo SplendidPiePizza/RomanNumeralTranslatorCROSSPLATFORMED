@@ -1,0 +1,103 @@
+CC = gcc
+CFLAGS = -Wall -Iinclude -I/usr/include/SDL2  # Add SDL2 headers 
+LIBS = -lSDL2  # Link SDL2 library
+
+SRC_DIR = src
+OBJ_DIR = obj
+BIN_DIR = bin
+INCLUDE_DIR = include
+
+SRC_FILES = $(SRC_DIR)/main.c $(SRC_DIR)/roman.c
+OBJ_FILES = $(SRC_FILES:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+
+TARGET = $(BIN_DIR)/RomanConverter
+
+# Default target
+all: $(TARGET)
+
+
+$(TARGET): $(OBJ_FILES)
+	$(CC) $(OBJ_FILES) -o $@ $(LIBS)
+
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+
+clean:
+	rm -f $(OBJ_DIR)/*.o $(TARGET)
+
+
+.PHONY: all clean
+
+CC = gcc
+CFLAGS = -Wall -Iinclude  
+LIBS = -lgdi32 -luser32
+
+SRC_DIR = src
+OBJ_DIR = obj
+BIN_DIR = bin
+INCLUDE_DIR = include
+
+SRC_FILES = $(SRC_DIR)/main.c $(SRC_DIR)/roman.c
+OBJ_FILES = $(OBJ_FILES:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+
+TARGET = $(BIN_DIR)/RomanConverter.exe
+
+# Default target
+all: $(TARGET)
+
+
+$(TARGET): $(OBJ_FILES)
+	$(CC) $(OBJ_FILES) -o $@ $(LIBS)
+
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+
+clean:
+	rm -f $(OBJ_DIR)/*.o $(TARGET)
+
+# Mark these targets as phony
+.PHONY: all clean
+CC = gcc
+CFLAGS = -Wall -Iinclude
+
+SRC_DIR = src
+OBJ_DIR = obj
+BIN_DIR = bin
+INCLUDE_DIR = include
+
+SRC_FILES = $(SRC_DIR)/main.c $(SRC_DIR)/roman.c
+OBJ_FILES = $(SRC_FILES:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+
+TARGET = $(BIN_DIR)/RomanConverter
+
+ifeq ($(shell uname),Darwin)
+    CFLAGS += -I/usr/include/SDL2
+    LIBS += -lSDL2
+endif
+
+ifeq ($(shell uname),Linux)
+    CFLAGS += `sdl2-config --cflags`
+    LIBS += `sdl2-config --libs`
+endif
+
+ifeq ($(findstring MINGW,$(shell uname)),MINGW)
+    CFLAGS += -I/path/to/SDL2/include
+    LIBS += -L/path/to/SDL2/lib -lSDL2
+endif
+
+all: $(TARGET)
+
+$(TARGET): $(OBJ_FILES)
+	$(CC) $(OBJ_FILES) -o $@ $(LIBS)
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(OBJ_DIR)/*.o $(TARGET)
+
+.PHONY: all clean
